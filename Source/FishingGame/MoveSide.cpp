@@ -9,6 +9,6 @@ void UMoveSide::TickComponent(float DeltaTime, ELevelTick Tick, FActorComponentT
 {
 	Super::TickComponent(DeltaTime, Tick, func);
 
-	FVector location = GetOwner()->GetActorLocation() + FVector(3.0f, 0.0f, 0.0f);
+	FVector location = GetOwner()->GetActorLocation() + FVector(speed, 0.0f, 0.0f);
 	GetOwner()->SetActorLocation(location);
 }
