@@ -1,34 +1,25 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
-
+﻿#pragma once
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "Components/ActorComponent.h"
 #include "MovementController.generated.h"
 
-UCLASS()
-class FISHINGGAME_API AMovementController : public APawn
+UCLASS(BlueprintType, Blueprintable, meta = (BlueprintSpawnableComponent))
+class FISHINGGAME_API UMovementController : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
-	AMovementController();
+	UMovementController();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
 	FVector CurrentVelocity;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };

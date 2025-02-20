@@ -1,53 +1,51 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "MovementController.h"
+#include "GameFramework/Actor.h"
+#include "GameFramework/PlayerController.h"
+#include "Components/InputComponent.h"
 
-
-#include "MovementController.h"
-
-
-// Sets default values
-AMovementController::AMovementController()
+UMovementController::UMovementController()
 {
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = true;
 	CurrentVelocity = FVector::ZeroVector;
 }
 
-// Called when the game starts or when spawned
-void AMovementController::BeginPlay()
+void UMovementController::BeginPlay()
 {
 	Super::BeginPlay();
-}
 
-// Called every frame
-void AMovementController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (!CurrentVelocity.IsZero())
+	AActor* Owner = GetOwner();
+	if (Owner)
 	{
-		FVector NewLocation = GetActorLocation() + (CurrentVelocity * DeltaTime);
-		SetActorLocation(NewLocation);
+		UInputComponent* InputComponent = Owner->FindComponentByClass<UInputComponent>();
+		if (InputComponent)
+		{
+			InputComponent->BindAxis("MoveForward", this, &UMovementController::MoveForward);
+			InputComponent->BindAxis("MoveRight", this, &UMovementController::MoveRight);
+		}
 	}
 }
 
-// Called to bind functionality to input
-void AMovementController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void UMovementController::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMovementController::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMovementController::MoveRight);
+	if (!CurrentVelocity.IsZero())
+	{
+		AActor* Owner = GetOwner();
+		if (Owner)
+		{
+			FVector NewLocation = Owner->GetActorLocation() + (CurrentVelocity * DeltaTime);
+			Owner->SetActorLocation(NewLocation);
+		}
+	}
 }
 
-void AMovementController::MoveForward(float Value)
+void UMovementController::MoveForward(float Value)
 {
 	CurrentVelocity.X = Value * 100.0f;
 }
 
-void AMovementController::MoveRight(float Value)
+void UMovementController::MoveRight(float Value)
 {
 	CurrentVelocity.Y = Value * 100.0f;
 }
-
-
-
